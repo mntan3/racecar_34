@@ -16,12 +16,13 @@ class Calibrate:
         self.node_name = "calibrate_node"
         self.header = std_msgs.msg.Header()
         self.last_time_saved = rospy.get_time()
+        self.bridge = CvBridge()
         self.sub_image = rospy.Subscriber("/camera/rgb/image_rect_color",Image, self.cbImage, queue_size=1)
         self.joy_control = rospy.Subscriber("/vesc/joy", Joy, self.take_picture)
         rospy.loginfo("Initialized")
         print("Show red paper and press joy button")
         self.color_index = 0
-        self.colors = ["red", "yellow", "green", "blue", "pink"]
+        self.colors = ["red", "yellow", "green", "blue", "pink", "arstasr","Arstasrtars","arstasrtasdarda"]
         self.curr_image = Image()
 
         #samples
@@ -46,22 +47,37 @@ class Calibrate:
         #self.process_image(self.pink_hsv)
 
     def cbImage(self, msg):
-        self.curr_image = msg.data
+        self.curr_image = msg
+        #print(msg.data)
         
     def take_picture(self, msg):
+        print("callback")
         if msg.buttons[0] == 1:
             image_cv = self.bridge.imgmsg_to_cv2(self.curr_image)
-            os.chdir("/home/racecar/racecar-ws/src/racecar_34/test")
-            cv2.imwrite("color_"+self.colors[self.color_index]+".jpg", self.curr_image)
+            print("got it")
+            os.chdir("/home/racecar/racecar-ws/src/racecar_34/test/pictures")
+            cv2.imwrite("color_"+self.colors[self.color_index]+".jpg", image_cv)
+            img_hsv = cv2.cvtColor(image_cv, cv2.COLOR_BGR2HSV)
+            print("processing" + self.colors[self.color_index] + "...")
+            if self.color_index < 8:
+                self.process_image(img_hsv)
+                print("put " + self.colors[self.color_index] + " paper and press joystick button")
+
     def process_image(self, im):
-        size = 100
-        os.chdir("/home/racecar/racecar-ws/src/racecar_34/test/out")
-        sys.stdout = open(self.colors[self.color_index]+".out", 'w')
-        for r in range(640-size, 640+size):
-            for c in range(360-size, 360+size):
-                print(im[c][r])
-        sys.stdout.close()
-        self.color_index += 1
+        size = 5
+        if self.color_index < 8:
+            os.chdir("/home/racecar/racecar-ws/src/racecar_34/test/out")
+            sys.stdout = open(self.colors[self.color_index]+".out", 'w')
+            for r in range(640-size, 640+size):
+                for c in range(360-size, 360+size):
+                    print(im[c][r])
+            #sys.stdout.close()
+            #sys.stdout.open("/dev/stdout", "w")
+            self.color_index += 1
+            print("calc")
+        else:
+            print("done")
+        return
 
 if __name__ == '__main__':
     rospy.init_node('calibrate_node')
