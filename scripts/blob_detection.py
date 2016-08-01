@@ -54,14 +54,13 @@ class Echo:
         template_sirtash = cv2.imread("sirtash.png", 0)
         template_cat = cv2.imread("cat.png", 0)
 
-        template_list = [template_ari, template_racecar, template_sirtash, template_cat]
+        hist_ari = cv2.calcHist([template_ari],[0],None,[256],[0,256])
+        hist_racecar = cv2.calcHist([template_racecar],[0],None,[256],[0,256])
+        hist_sirtash = cv2.calcHist([template_sirtash],[0],None,[256],[0,256])
+        hist_cat = cv2.calcHist([template_cat],[0],None,[256],[0,256])
 
-        template_avg_colors = []
+        hist_list = [hist_ari, hist_racecar, hist_sirtash, hist_cat]
 
-        for template in template_list:
-            average_color_per_row = np.average(template, axis=0)
-            average_color = np.average(average_color_per_row, axis=0)
-            template_avg_colors.append(average_color)
         red_lower = np.array([-7,125,100])
         red_upper = np.array([7,255,255])
 
@@ -114,37 +113,41 @@ class Echo:
                         text_color = (0,255,0)
                         blob_message = "green"
                     if i == 3:
-                        text = "DA BLUE CLOR"
+                        text = "tHe BLUE CLOR"
                         self.blob_colors.append(ColorRGBA(255,0,0,1))
                         text_color = (255,0,0)
                         blob_message = "blue"
                     if i == 4:
-                        text = "WAZZUP PINK"
+                        text = "Is iT  PINK"
                         text_color = (147,20,255)
                         blob_message = "pink"
                         isPink = True
                     x,y,w,h = cv2.boundingRect(contour)
                     cv2.rectangle(image_cv, (x,y), (x+w, y+h), (147,20,255),2)
-                    #if isPink:
+                    if isPink:
                         
-                        #crop_img_b4 = cv2.bitwise_not(image_cv_hsv, image_cv_hsv, mask = pink_mask)
-                        #crop_img_b2 = crop_img_b4[y:h, x:w]
-                        #crop_img = cv2.cvtColor(crop_img_b2, cv2.COLOR_HSV2BGR)
-                        #average_color_per_row = np.average(crop_img, axis = 0)
-                        #average_color = np.average(average_color_per_row, axis = 0)
+                        crop_img_b4 = cv2.bitwise_not(image_cv_hsv, image_cv_hsv, mask = pink_mask)
+                        crop_img_b2 = crop_img_b4[y: y + h, x: x + w]
+
+                        crop_img = cv2.cvtColor(crop_img_b2, cv2.COLOR_BGR2GRAY)
+
+                        hist = cv2.calcHist([crop_img],[0],None,[256],[0,256])
+
+                        results = [0]
                         
-                        #for avg in range(0, len(template_avg_colors)):
-                            #if abs(avg - average_color) < 15:
-                                #if i == 0:
-                                    #blob_message = "ari"
-                                #elif i == 1:
-                                    #blob_message = "racecar"
-                                #elif i == 2:
-                                    #blob_message = "sirtash"
-                                #elif i == 3:
-                                    #blob_message = "cat"
-                                #else:
-                                    #blob_message = "pink"                                                              
+                        for hist_pic in hist_list:
+                            results.append(cv2.compareHist(hist, hist_pic, cv2.cv.CV_COMP_CORREL))
+                        max_index, max_value = max(enumerate(results), key=operator.itemgetter(1))
+                        if max_value > 1:
+                            if max_index = 1:
+                                blob_message = "ari"
+                            elif max_index = 2:
+                                blob_message = "racecar"
+                            elif max_index = 3:
+                                blob_message = "sirtac"
+                            elif max_index = 4:
+                                blob_message = "cat"
+                   
                     cv2.putText(image_cv,text,(x,y),4,1,text_color)
                     cv2.circle(image_cv, (x+(w/2),y+(h/2)), 5, (255,0,0),5)
                     self.blob_sizes.append(Float64(h))
