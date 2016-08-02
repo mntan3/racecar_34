@@ -12,7 +12,7 @@ class Turn:
 		self.direction = 0		#0 is left, 1 is right
 		rospy.Subscriber("/turn", String, self.setSide)
 		self.wall_pub = rospy.Publisher("/wallfollow", String, queue_size=1)
-		self.drive_pub = rospy.Publisher("/vesc/ackermann_cmd_mux/input/navigation", AckermannDriveStamped, queue_size = 1)
+		self.drive_pub = rospy.Publisher("turn_drive", AckermannDriveStamped, queue_size = 1)
 		self.turn_counter = 0
 		self.header = std_msgs.msg.Header()
 

@@ -3,12 +3,13 @@
 import rospy
 from ackermann_msgs.msg import AckermannDriveStamped
 from sensor_msgs.msg import LaserScan
+from std_msgs.msg import *
 
 class SafetyControllerNode:
     def __init__(self):
         rospy.Subscriber("/scan", LaserScan, self.laser_callback, queue_size=10)
 
-        self.pub = rospy.Publisher("/vesc/ackermann_cmd_mux/input/safety", AckermannDriveStamped, queue_size=10)
+        self.pub = rospy.Publisher("safety", AckermannDriveStamped, queue_size=10)
 
     def laser_callback(self, msg):
         center = len(msg.ranges) / 2

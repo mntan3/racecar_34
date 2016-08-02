@@ -11,7 +11,7 @@ class WinterDodgeNode:
     def __init__(self):
         self.node_name = "winter_dodge_node"
         self.K_energy = -0.12
-        self.drive_pub = rospy.Publisher("/vesc/ackermann_cmd_mux/input/navigation", AckermannDriveStamped, queue_size = 1)
+        self.drive_pub = rospy.Publisher("main_drive", AckermannDriveStamped, queue_size = 1)
         self.scan_sub = rospy.Subscriber("/scan", LaserScan, self.laser_callback)
         self.header = std_msgs.msg.Header()
 
@@ -40,3 +40,4 @@ if __name__ == "__main__":
     rospy.init_node("winter_dodge_node")
     node = WinterDodgeNode()
     rospy.spin()
+
