@@ -1,0 +1,17 @@
+<launch>
+
+  <include file="$(find racecar)/launch/teleop.launch"/>
+
+  <include file="$(find zed_wrapper)/launch/zed.launch"/>
+
+  <node pkg="team34" type="blob_detection.py" name="blob_detection_node" />
+
+  <node pkg="team34" type="wall_follower.py" name="wall_follow_node" />
+
+  <node pkg="team34" type="turn.py" name="turn_node" />
+
+  <node pkg="team34" type="visual_servo.py" name="visual_servo_node" />
+
+  <!-- <node pkg="team34" type="safety_control.py" name= "safety_controller_node" /> -->
+
+</launch> 
