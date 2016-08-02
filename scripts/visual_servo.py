@@ -35,12 +35,12 @@ class VisualServo:
 
         K_Prop = 0.0005
         K_Deriv = 0.0
-        K_Int = 0.0    
+        K_Int = 0.0
         if self.ableToDrive:
             if not self.achievedFirstGoal:
                 if height < 120:  #120
                     print("too far")
-                    drivemsg.drive.speed = 3.0
+                    drivemsg.drive.speed = 1.0
                 else:
                     print("close enough")
                     drivemsg.drive.speed = 0.0
@@ -59,6 +59,7 @@ class VisualServo:
                 int_x_error = self.current_riemann_sum + delta_t * average_x
 
                 drivemsg.drive.steering_angle = (K_Prop * x_error + K_Deriv * deriv_x_error + K_Int * int_x_error) * (-1)
+		print("steering angle" + str((K_Prop * x_error + K_Deriv * deriv_x_error + K_Int * int_x_error) * (-1)))
 		       
                 self.pub_drive.publish(drivemsg)
                 self.previous_x_error = x_error
@@ -69,19 +70,8 @@ class VisualServo:
                 print("isGreen" + str(self.isGreen))
                 if self.isGreen:
                     wall_publisher = "turn left"
-                    drivemsg.drive.steering_angle = -1.0
                 else:
                     wall_publisher = "turn right"
-                    drivemsg.drive.steering_angle = 1.0
-                drivemsg.drive.speed = 1.0
-                if not self.achievedSecondGoal:
-                    x = 1
-                    while x < 10:
-                        self.pub_drive.publish(drivemsg)
-                        rospy.sleep(0.15)
-                        x = x + 1
-                    self.pub_nextGoal.publish(wall_publisher)
-                    self.achievedSecondGoal = True
         else:
             pub_drive.publish(AckermannDriveStamped(self.header, AckermannDrive(steering_angle = 0.0, speed = 0.0)))
 	
@@ -89,9 +79,9 @@ class VisualServo:
         for i in range(0, len(msg.colors)):
             if msg.colors[i].g == 255 or msg.colors[i].r == 255.0:
                 if msg.colors[i].g == 255.0:
-                    isGreen = True
+                    self.isGreen = True
                 if msg.colors[i].r == 255.0:
-                    isGreen = False
+                    self.isGreen = False
                 print("green value" + str(msg.colors[i].g))
                 print("red value" + str(msg.colors[i].r))
                 height = msg.sizes[i].data

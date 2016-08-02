@@ -6,7 +6,7 @@ import rospy
 import time
 from std_msgs.msg import *
 from sensor_msgs.msg import Image
-from object_detection.msg import BlobDetections
+from team34.msg import BlobDetections
 from cv_bridge import CvBridge, CvBridgeError
 import threading
 import numpy as np
@@ -201,7 +201,7 @@ class Echo:
     def ChallengePublisher(self, blob_message, image):
         current_time = rospy.get_time()
         if current_time - self.last_time_saved > 1.5:
-            os.chdir("/home/racecar/challenge_photos/test")
+            os.chdir("/home/racecar/challenge_photos")
             cv2.imwrite(blob_message + str(current_time) + ".jpg", image)
             self.last_time_saved = current_time
         self.pub_exploratory_matches.publish(blob_message)
