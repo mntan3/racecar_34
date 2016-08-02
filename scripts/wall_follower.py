@@ -17,7 +17,11 @@ PID_KD = 1.0
 class wall_follow:
     def __init__(self):
         rospy.Subscriber('/scan', LaserScan, self.simulate_callback, queue_size=10)
+<<<<<<< HEAD
 	rospy.Subscriber('/fork', String, self.enable)
+=======
+	rospy.Subscriber('/wallfollow', String, self.enable)
+>>>>>>> 67134dbbf8fb47955b04836eba9528b72ff9b611
 	self.drive_pub = rospy.Publisher("wall_follow", AckermannDriveStamped, queue_size = 1)
 	self.header = std_msgs.msg.Header()
         self.last_error = None

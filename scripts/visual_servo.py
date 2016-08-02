@@ -61,10 +61,28 @@ class VisualServo:
             drivemsg.drive.steering_angle = (K_Prop * x_error + K_Deriv * deriv_x_error + K_Int * int_x_error) * (-1)
 	    print("steering angle" + str((K_Prop * x_error + K_Deriv * deriv_x_error + K_Int * int_x_error) * (-1)))
 		       
+<<<<<<< HEAD
             self.pub_drive.publish(drivemsg)
             self.previous_x_error = x_error
             self.previous_time = current_time
             self.current_riemann_sum = int_x_error
+=======
+                self.pub_drive.publish(drivemsg)
+                self.previous_x_error = x_error
+                self.previous_time = current_time
+                self.current_riemann_sum = int_x_error
+
+            else:
+                if not self.achievedSecondGoal:
+                    print("isGreen" + str(self.isGreen))
+                    wall_publisher = ""
+                    if self.isGreen:
+                        wall_publisher = "turn left"
+                    else:
+                        wall_publisher = "turn right"
+                    self.pub_nextGoal.publish(wall_publisher)
+                    self.achievedSecondGoal = True
+>>>>>>> 67134dbbf8fb47955b04836eba9528b72ff9b611
         else:
             print("isGreen" + str(self.isGreen))
             if self.isGreen:
