@@ -16,4 +16,6 @@
 
   <node pkg="team34" type="safety_control.py" name= "safety_controller_node" />
 
+  <remap from="/vesc/ackermann_cmd_mux/input/default" to="/dumb_node_that_does_nothing" />
+
 </launch> 

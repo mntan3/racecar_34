@@ -17,33 +17,25 @@ PID_KD = 1.0
 class wall_follow:
     def __init__(self):
         rospy.Subscriber('/scan', LaserScan, self.simulate_callback, queue_size=10)
-<<<<<<< HEAD
-	rospy.Subscriber('/fork', String, self.enable)
-=======
-	rospy.Subscriber('/wallfollow', String, self.enable)
->>>>>>> 67134dbbf8fb47955b04836eba9528b72ff9b611
+	rospy.Subscriber('wall_transition', Int16, self.enable)
 	self.drive_pub = rospy.Publisher("wall_follow", AckermannDriveStamped, queue_size = 1)
 	self.header = std_msgs.msg.Header()
         self.last_error = None
         self.STOP = AckermannDriveStamped(self.header, AckermannDrive(speed=0.0, steering_angle=0.0))
 	
-        self.followState = 0    #0 is stop, 1 is follow left, 2 is follow right
+        self.followState = 0    #0 is follow right, 1 is follow left, 2 is stop
         
         self.desired = 0.55
 
     #Sets which wall to follow based on msg from /wallfollow topic
     def enable(self,msg):
-        if msg.data == "green":
-            self.followState = 1
-        elif msg.data == "red":
-            self.followState = 2
-
+        self.followState = msg.data
     #Given all laser scan data, compute perpendicular distance
     def calc_actual_dist(self, ranges):
         if self.followState == 1:
             end_index = 900
             start_index = 660                   #Laser ranges go from 0-1080, while angle go from 0-270
-        else: # follow right
+        elif self.followState == 0: # follow right
             end_index = 420
             start_index = 180
 
@@ -79,7 +71,7 @@ class wall_follow:
 	print(steer_output)
         
         #Send drive commands if the state allows
-        if not self.followState ==  0:
+        if not self.followState ==  2:
             drive_msg = AckermannDriveStamped()
             drive_msg.drive.speed = 1.0 # max speed
             drive_msg.drive.steering_angle = steer_output

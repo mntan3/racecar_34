@@ -13,7 +13,7 @@ class MainControl:
         #Add publisher for every node that is to be controlled
         self.wall_pub = rospy.Publisher("/wallfollow", String, queue_size=1)
         #rospy.Publisher("/transition", String, queue_size=10)
-
+        rospy.loginfo("initialized")
 	#
 
     #When message recieved from /transition topic, start the appropriate node by publishing a message 

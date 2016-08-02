@@ -10,16 +10,12 @@ class Turn:
 		self.direction = 0		#0 is left, 1 is right
 		rospy.Subscriber("/fork", String, self.setSide)
 		self.drive_pub = rospy.Publisher("turn_drive", AckermannDriveStamped, queue_size = 1)
+                self.wall_transition_pub = rospy.Publisher("wall_transition", Int16, queue_size=1)
 		self.turn_counter = 1
 		self.header = std_msgs.msg.Header()
 
 	def setSide(self, msg):
-<<<<<<< HEAD
 		if msg.data == "green":
-=======
-            
-		if msg.data == "turn right":
->>>>>>> 67134dbbf8fb47955b04836eba9528b72ff9b611
 			self.direction = 1
 		elif msg.data == "red":
 			self.direction = 0
@@ -39,7 +35,8 @@ class Turn:
 		self.turn_counter += 1
 		if self.turn_counter > 6:
 			self.turn_timer.shutdown()
-		self.turn_counter = 0
+                        self.wall_transition_pub.publish(self.direction)
+	
 if __name__ == "__main__":
 	rospy.init_node("turn_node")
 	node = Turn()

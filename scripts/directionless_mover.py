@@ -15,6 +15,8 @@ class WinterDodgeNode:
         self.scan_sub = rospy.Subscriber("/scan", LaserScan, self.laser_callback)
         self.header = std_msgs.msg.Header()
 
+        rospy.loginfo("INITIALIZED")
+
     def laser_callback(self, msg):
 
         x_force_total = -self.K_energy / 0.025**2

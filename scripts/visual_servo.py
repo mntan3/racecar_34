@@ -15,7 +15,7 @@ class VisualServo:
         self.previous_time = time.time()
         self.current_riemann_sum = 0
         self.header = std_msgs.msg.Header()
-        self.drive_speed = 1
+        #self.drive_speed = 1
         self.ableToDrive = True
         self.image_center = 640
         self.node_name = "visual_servo_node"
@@ -24,7 +24,7 @@ class VisualServo:
         self.achievedSecondGoal = False
         self.sub_blob = rospy.Subscriber("blob_detections", BlobDetections, self.get_target_cb)
         self.pub_fork = rospy.Publisher("/fork", String, queue_size = 1)
-        self.pub_drive = rospy.Publisher("/visual_servo", AckermannDriveStamped,queue_size=1)
+        self.pub_drive = rospy.Publisher("visual_servo", AckermannDriveStamped,queue_size=1)
         self.pub_nextGoal = rospy.Publisher("/turn", String, queue_size = 2)
         rospy.loginfo("initialized")
 
@@ -38,13 +38,19 @@ class VisualServo:
         K_Deriv = 0.0
         K_Int = 0.0
         if not self.achievedFirstGoal:
-            if height < 120:  #120
+            if height < 350:  #120
                 print("too far")
                 drivemsg.drive.speed = 1.0
             else:
                 print("close enough")
                 drivemsg.drive.speed = 0.0
                 self.achievedFirstGoal = True
+            	self.pub_nextGoal.publish("Turn")
+                print("isGreen" + str(self.isGreen))
+                if self.isGreen:
+                    self.pub_fork.publish("green")
+                else:
+                    self.pub_fork.publish("red")
             current_time = time.time()
             delta_t = current_time - self.previous_time
             delta_x = x_error - self.previous_x_error
@@ -61,35 +67,13 @@ class VisualServo:
             drivemsg.drive.steering_angle = (K_Prop * x_error + K_Deriv * deriv_x_error + K_Int * int_x_error) * (-1)
 	    print("steering angle" + str((K_Prop * x_error + K_Deriv * deriv_x_error + K_Int * int_x_error) * (-1)))
 		       
-<<<<<<< HEAD
             self.pub_drive.publish(drivemsg)
             self.previous_x_error = x_error
             self.previous_time = current_time
             self.current_riemann_sum = int_x_error
-=======
-                self.pub_drive.publish(drivemsg)
-                self.previous_x_error = x_error
-                self.previous_time = current_time
-                self.current_riemann_sum = int_x_error
-
-            else:
-                if not self.achievedSecondGoal:
-                    print("isGreen" + str(self.isGreen))
-                    wall_publisher = ""
-                    if self.isGreen:
-                        wall_publisher = "turn left"
-                    else:
-                        wall_publisher = "turn right"
-                    self.pub_nextGoal.publish(wall_publisher)
-                    self.achievedSecondGoal = True
->>>>>>> 67134dbbf8fb47955b04836eba9528b72ff9b611
-        else:
-            print("isGreen" + str(self.isGreen))
-            if self.isGreen:
-                self.pub_fork.publish("green")
-            else:
-                self.pub_fork.publish("red")
-            self.pub_drive.publish(AckermannDriveStamped(self.header, AckermannDrive(steering_angle = 0.0, speed = 0.0)))
+            self.previous_x_error = x_error
+            self.previous_time = current_time
+            self.current_riemann_sum = int_x_error
 	
     def get_target_cb(self, msg):
         for i in range(0, len(msg.colors)):

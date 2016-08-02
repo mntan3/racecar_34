@@ -10,6 +10,7 @@ class SafetyControllerNode:
         rospy.Subscriber("/scan", LaserScan, self.laser_callback, queue_size=10)
 
         self.pub = rospy.Publisher("safety", AckermannDriveStamped, queue_size=10)
+        rospy.loginfo("initialized")
 
     def laser_callback(self, msg):
         center = len(msg.ranges) / 2
