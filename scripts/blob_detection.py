@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os
+import operator
 import cv2
 import rospy
 import time
@@ -138,22 +139,47 @@ class Echo:
                         for hist_pic in hist_list:
                             results.append(cv2.compareHist(hist, hist_pic, cv2.cv.CV_COMP_CORREL))
                         max_index, max_value = max(enumerate(results), key=operator.itemgetter(1))
-                        if max_value > 1:
-                            if max_index = 1:
-                                blob_message = "ari"
-                            elif max_index = 2:
-                                blob_message = "racecar"
-                            elif max_index = 3:
-                                blob_message = "sirtac"
-                            elif max_index = 4:
-                                blob_message = "cat"
+                        blob_message = str(max_index)
+                        if max_value > 0:
+                            if max_index == 1:
+                                blob_message = "R E"
+                            elif max_index == 2:
+                                blob_message = "raseKar"
+                            elif max_index == 3:
+                                blob_message = "sErtacsh"
+                            elif max_index == 4:
+                                blob_message = "kiTTy"
                    
+                    else:
+                        shape = "unidentified"
+			peri = cv2.arcLength(contour, True)
+			approx = cv2.approxPolyDP(contour, 0.02 * peri, True)
+			area = cv2.contourArea(contour)
+			rect_area = w*h
+			extent = (float(area)/rect_area)
+			
+			if len(approx) == 4:
+				if extent >= 0.7:
+					shape ="square"
+				else:
+					shape = "rhombus"
+			elif len(approx) == 12:
+				if extent >= 0.69:
+					shape = "X"
+				else:
+					shape = "+"
+			else:
+				shape = "circle"
+
+			blob_message = shape
+
                     cv2.putText(image_cv,text,(x,y),4,1,text_color)
                     cv2.circle(image_cv, (x+(w/2),y+(h/2)), 5, (255,0,0),5)
                     self.blob_sizes.append(Float64(h))
                     print(Point(x+(w/2),y+(h/2),0))
                     self.blob_positions.append(Point(x+(w/2),y+(h/2),0))
                     self.ChallengePublisher(blob_message, image_cv)
+	    
         try:
             print(self.header)
             print(self.blob_colors)

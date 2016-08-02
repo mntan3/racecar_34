@@ -10,9 +10,9 @@ import math
 #Need to add function that publishes to follow right wall when it detects a large shift in laser data on the left side, indicating the gap
 
 PID_KP_LEFT = 2.0
-PID_KP_RIGHT =  200
+PID_KP_RIGHT = 1.5
 
-PID_KD = 0
+PID_KD = 1.0
 
 class wall_follow:
     def __init__(self):
@@ -88,6 +88,6 @@ class wall_follow:
         self.last_error = error
 
 if __name__ == '__main__':
-    rospy.init_node('wall_follower')
+    rospy.init_node('wall_follow_node')
     node = wall_follow()
     rospy.spin()
