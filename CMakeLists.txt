@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(team34)
+project(racecar_34)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -105,7 +105,7 @@ add_message_files(
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES team34
+#  LIBRARIES racecar_34
   CATKIN_DEPENDS message_runtime
 #  DEPENDS system_lib
 )
@@ -122,24 +122,24 @@ include_directories(
 )
 
 ## Declare a C++ library
-# add_library(team34
-#   src/${PROJECT_NAME}/team34.cpp
+# add_library(racecar_34
+#   src/${PROJECT_NAME}/racecar_34.cpp
 # )
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
 ## either from message generation or dynamic reconfigure
-# add_dependencies(team34 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(racecar_34 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-# add_executable(team34_node src/team34_node.cpp)
+# add_executable(racecar_34_node src/racecar_34_node.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-# add_dependencies(team34_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(racecar_34_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(team34_node
+# target_link_libraries(racecar_34_node
 #   ${catkin_LIBRARIES}
 # )
 
@@ -158,7 +158,7 @@ include_directories(
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS team34 team34_node
+# install(TARGETS racecar_34 racecar_34_node
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -183,7 +183,7 @@ include_directories(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_team34.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_racecar_34.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()

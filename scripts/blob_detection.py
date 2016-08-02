@@ -6,7 +6,7 @@ import rospy
 import time
 from std_msgs.msg import *
 from sensor_msgs.msg import Image
-from team34.msg import BlobDetections
+from racecar_34.msg import BlobDetections
 from cv_bridge import CvBridge, CvBridgeError
 import threading
 import numpy as np
@@ -27,8 +27,8 @@ class Echo:
                 Image, self.cbImage, queue_size=1)
         self.pub_image = rospy.Publisher("~echo_image",\
                 Image, queue_size=1)
-        self.pub_blob_detections = rospy.Publisher("blob_detections",BlobDetections, queue_size=10)
-        self.pub_exploratory_matches = rospy.Publisher("/exploring_challenge", String, queue_size = 10)
+        self.pub_blob_detections = rospy.Publisher("blob_detections",BlobDetections, queue_size=1)
+        self.pub_exploratory_matches = rospy.Publisher("/exploring_challenge", String, queue_size = 1)
         self.bridge = CvBridge()
 
         rospy.loginfo("[%s] Initialized." %(self.node_name))

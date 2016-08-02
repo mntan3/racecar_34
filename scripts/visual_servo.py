@@ -4,7 +4,7 @@ import rospy
 import time
 from std_msgs.msg import *
 from sensor_msgs.msg import *
-from team34.msg import BlobDetections
+from racecar_34.msg import BlobDetections
 from cv_bridge import CvBridge, CvBridgeError
 import threading
 import numpy as np

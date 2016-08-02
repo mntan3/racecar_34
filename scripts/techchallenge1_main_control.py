@@ -3,7 +3,7 @@ import rospy
 from ackermann_msgs.msg import AckermannDriveStamped
 from std_msgs.msg import *
 from sensor_msgs.msg import *
-from team34.msg import BlobDetections
+from racecar_34.msg import BlobDetections
 
 class MainControl1:
     def __init__(self):
