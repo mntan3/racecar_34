@@ -26,7 +26,7 @@ class SafetyControllerNode:
 	    rospy.loginfo("center range(s): %f", avg)
 
 if __name__ == "__main__":
-    rospy.init_node("safety_controller_py")
+    rospy.init_node("safety_controller_node")
     node = SafetyControllerNode()
     rospy.spin()
 

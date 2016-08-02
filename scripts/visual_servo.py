@@ -23,7 +23,8 @@ class VisualServo:
         self.achievedFirstGoal = False
         self.achievedSecondGoal = False
         self.sub_blob = rospy.Subscriber("blob_detections", BlobDetections, self.get_target_cb)
-        self.pub_drive = rospy.Publisher("/vesc/ackermann_cmd_mux/input/navigation", AckermannDriveStamped,queue_size=1)
+        self.pub_fork = rospy.Publisher("/fork", String, queue_size = 1)
+        self.pub_drive = rospy.Publisher("/visual_servo", AckermannDriveStamped,queue_size=1)
         self.pub_nextGoal = rospy.Publisher("/turn", String, queue_size = 2)
         rospy.loginfo("initialized")
 
@@ -36,44 +37,41 @@ class VisualServo:
         K_Prop = 0.0005
         K_Deriv = 0.0
         K_Int = 0.0
-        if self.ableToDrive:
-            if not self.achievedFirstGoal:
-                if height < 120:  #120
-                    print("too far")
-                    drivemsg.drive.speed = 1.0
-                else:
-                    print("close enough")
-                    drivemsg.drive.speed = 0.0
-                    self.achievedFirstGoal = True
-                current_time = time.time()
-                delta_t = current_time - self.previous_time
-                delta_x = x_error - self.previous_x_error
-                average_x = (x_error + self.previous_x_error)/2
-
-                # using the change in error over the change in time to calculate the rate of change.
-
-       	        deriv_x_error = delta_x/delta_t
-
-                # using the riemann sum to calculate the integral
-
-                int_x_error = self.current_riemann_sum + delta_t * average_x
-
-                drivemsg.drive.steering_angle = (K_Prop * x_error + K_Deriv * deriv_x_error + K_Int * int_x_error) * (-1)
-		print("steering angle" + str((K_Prop * x_error + K_Deriv * deriv_x_error + K_Int * int_x_error) * (-1)))
-		       
-                self.pub_drive.publish(drivemsg)
-                self.previous_x_error = x_error
-                self.previous_time = current_time
-                self.current_riemann_sum = int_x_error
-
+        if not self.achievedFirstGoal:
+            if height < 120:  #120
+                print("too far")
+                drivemsg.drive.speed = 1.0
             else:
-                print("isGreen" + str(self.isGreen))
-                if self.isGreen:
-                    wall_publisher = "turn left"
-                else:
-                    wall_publisher = "turn right"
+                print("close enough")
+                drivemsg.drive.speed = 0.0
+                self.achievedFirstGoal = True
+            current_time = time.time()
+            delta_t = current_time - self.previous_time
+            delta_x = x_error - self.previous_x_error
+            average_x = (x_error + self.previous_x_error)/2
+
+            # using the change in error over the change in time to calculate the rate of change.
+
+       	    deriv_x_error = delta_x/delta_t
+
+            # using the riemann sum to calculate the integral
+
+            int_x_error = self.current_riemann_sum + delta_t * average_x
+
+            drivemsg.drive.steering_angle = (K_Prop * x_error + K_Deriv * deriv_x_error + K_Int * int_x_error) * (-1)
+	    print("steering angle" + str((K_Prop * x_error + K_Deriv * deriv_x_error + K_Int * int_x_error) * (-1)))
+		       
+            self.pub_drive.publish(drivemsg)
+            self.previous_x_error = x_error
+            self.previous_time = current_time
+            self.current_riemann_sum = int_x_error
         else:
-            pub_drive.publish(AckermannDriveStamped(self.header, AckermannDrive(steering_angle = 0.0, speed = 0.0)))
+            print("isGreen" + str(self.isGreen))
+            if self.isGreen:
+                self.pub_fork.publish("green")
+            else:
+                self.pub_fork.publish("red")
+            self.pub_drive.publish(AckermannDriveStamped(self.header, AckermannDrive(steering_angle = 0.0, speed = 0.0)))
 	
     def get_target_cb(self, msg):
         for i in range(0, len(msg.colors)):

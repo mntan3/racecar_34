@@ -17,8 +17,8 @@ PID_KD = 1.0
 class wall_follow:
     def __init__(self):
         rospy.Subscriber('/scan', LaserScan, self.simulate_callback, queue_size=10)
-	rospy.Subscriber('/wallfollow', String, self.enable)
-	self.drive_pub = rospy.Publisher("/vesc/ackermann_cmd_mux/input/navigation", AckermannDriveStamped, queue_size = 1)
+	rospy.Subscriber('/fork', String, self.enable)
+	self.drive_pub = rospy.Publisher("wall_follow", AckermannDriveStamped, queue_size = 1)
 	self.header = std_msgs.msg.Header()
         self.last_error = None
         self.STOP = AckermannDriveStamped(self.header, AckermannDrive(speed=0.0, steering_angle=0.0))
@@ -29,12 +29,10 @@ class wall_follow:
 
     #Sets which wall to follow based on msg from /wallfollow topic
     def enable(self,msg):
-        if msg.data == "follow left":
+        if msg.data == "green":
             self.followState = 1
-        elif msg.data == "follow right":
+        elif msg.data == "red":
             self.followState = 2
-        elif msg.data == "stop follow":
-            self.followState = 0
 
     #Given all laser scan data, compute perpendicular distance
     def calc_actual_dist(self, ranges):

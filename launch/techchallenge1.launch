@@ -1,0 +1,15 @@
+<launch>
+
+  <include file="$(find racecar)/launch/teleop.launch"/>
+
+  <include file="$(find zed_wrapper)/launch/zed.launch"/>
+
+  <node pkg="team34" type="techchallenge1_main_control.py" name="tech_challenge_1_main_control_node" />
+
+  <node pkg="team34" type="safety_control.py" name= "safety_controller_node" />
+
+  <node pkg="team34" type="directionless_mover.py" name= "winter_dodge_node" />
+
+  <node pkg="team34" type="blob_detection.py" name= "Echo" />
+
+</launch> 
