@@ -4,7 +4,7 @@ import rospy
 import time
 from std_msgs.msg import *
 from sensor_msgs.msg import *
-from object_detection.msg import BlobDetections
+from team34.msg import BlobDetections
 from cv_bridge import CvBridge, CvBridgeError
 import threading
 import numpy as np
@@ -23,16 +23,9 @@ class VisualServo:
         self.achievedFirstGoal = False
         self.achievedSecondGoal = False
         self.sub_blob = rospy.Subscriber("blob_detections", BlobDetections, self.get_target_cb)
-        self.sub_control = rospy.Subscriber("/vesc/joy", Joy, self.drive_control_cb)
         self.pub_drive = rospy.Publisher("/vesc/ackermann_cmd_mux/input/navigation", AckermannDriveStamped,queue_size=1)
         self.pub_nextGoal = rospy.Publisher("/turn", String, queue_size = 2)
         rospy.loginfo("initialized")
-
-    def drive_control_cb(self, msg):
-        if msg.buttons[0] == 1:
-            self.ableToDrive == False
-        else:
-            return
 
     def drive_control(self, height, x, y):
 
