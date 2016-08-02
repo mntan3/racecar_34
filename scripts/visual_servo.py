@@ -67,11 +67,15 @@ class VisualServo:
                 self.current_riemann_sum = int_x_error
 
             else:
-                print("isGreen" + str(self.isGreen))
-                if self.isGreen:
-                    wall_publisher = "turn left"
-                else:
-                    wall_publisher = "turn right"
+                if not self.achievedSecondGoal:
+                    print("isGreen" + str(self.isGreen))
+                    wall_publisher = ""
+                    if self.isGreen:
+                        wall_publisher = "turn left"
+                    else:
+                        wall_publisher = "turn right"
+                    self.pub_nextGoal.publish(wall_publisher)
+                    self.achievedSecondGoal = True
         else:
             pub_drive.publish(AckermannDriveStamped(self.header, AckermannDrive(steering_angle = 0.0, speed = 0.0)))
 	

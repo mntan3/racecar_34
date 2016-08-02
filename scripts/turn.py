@@ -13,10 +13,11 @@ class Turn:
 		rospy.Subscriber("/turn", String, self.setSide)
 		self.wall_pub = rospy.Publisher("/wallfollow", String, queue_size=1)
 		self.drive_pub = rospy.Publisher("turn_drive", AckermannDriveStamped, queue_size = 1)
-		self.turn_counter = 0
+		self.turn_counter = 1
 		self.header = std_msgs.msg.Header()
 
 	def setSide(self, msg):
+            
 		if msg.data == "turn right":
 			self.direction = 1
 		elif msg.data == "turn left":
