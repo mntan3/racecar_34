@@ -32,6 +32,8 @@ class GrandPrixMainControl:
         self.green_upper = np.array([70,255,255])
 
     def laser_cb(self, msg):
+
+        # boost is only for y dimension, left and right steering.
         boost = 0
 
         if self.ifSeeingGreen:
@@ -42,7 +44,7 @@ class GrandPrixMainControl:
         x_force_total = -self.K_energy / 0.025**2
         y_force_total = boost
 
-        
+        # let's make sure that this is the ranges we want
         for i in range(180, 900):
             angle = math.radians((i - 540)/4)
             dist = msg.ranges[i]
@@ -55,7 +57,9 @@ class GrandPrixMainControl:
             x_force_total = x_force_total + x_force
             y_force_total = y_force_total + y_force
 
+        # if we're feeling bold, we can remove the speed, and set it to be fixed. IDK if that will work for our algorithm though.
         speed = 0.005 * math.sqrt(x_force_total**2 + y_force_total**2) * np.sign(x_force_total)
+        # this is the most important part though
         steering_angle = 1.0 * math.atan2(y_force_total, x_force_total) * np.sign(x_force_total)
         print(x_force_total, y_force_total, speed, steering_angle)
         self.drive_pub.publish(AckermannDriveStamped(self.header, AckermannDrive(speed = speed, steering_angle = steering_angle)))
@@ -66,19 +70,21 @@ class GrandPrixMainControl:
         self.ifSeeingRed = False
 
         image_cv = self.bridge.imgmsg_to_cv2(image_msg)
-        height,width,depth = image_cv.shape
         image_cv_hsv = cv2.cvtColor(image_cv, cv2.COLOR_BGR2HSV)
 
         red_mask = cv2.inRange(image_cv_hsv, self.red_lower, self.red_upper)
         green_mask = cv2.inRange(image_cv_hsv, self.green_lower, self.green_upper)
 
+        # if it's too slow, me might want to remove these ones and not make it gray scaled, just to speed up our code
+
         red_obj = cv2.bitwise_and(image_cv, image_cv, mask = red_mask)
         green_obj = cv2.bitwise_and(image_cv, image_cv, mask = green_mask)
 
+        # I'm still unsure of if this would work with the masks inside instead of the objects
         full_image = [red_obj, green_obj]
 
         for i in range(0, len(full_image)):
-            
+            # maybe we don't even have to make it gray! (maybe we do though)
             im_gray = cv2.cvtColor(full_image[i], cv2.COLOR_BGR2GRAY)
             contours, hierarchy = cv2.findContours(full_image[i], cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
             sorted_contours = sorted(contours, key = lambda x: cv2.contourArea(x), reverse=True)
@@ -94,6 +100,8 @@ class GrandPrixMainControl:
                         text = "hUH? grEeN's in the ayre?"
                         text_color = (0,255,0)
                         self.ifSeeingGreen = True
+
+                    # Once we know our algorithm works well, we can remove this part of it... for code speed of course.
                     x,y,w,h = cv2.boundingRect(contour)
                     cv2.rectangle(image_cv, (x,y), (x+w, y+h), (147,20,255),2)
                     cv2.putText(image_cv,text,(x,y),4,1,text_color)
