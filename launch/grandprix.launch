@@ -6,6 +6,4 @@
 
   <node pkg="racecar_34" type="grandprix_main_control.py" name="tech_challenge_2_main_control_node" />
 
-  <node pkg="racecar_34" type="directionless_mover.py" name="racer_node" />
-
 </launch> 
