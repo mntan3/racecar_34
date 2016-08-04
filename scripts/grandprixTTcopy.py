@@ -45,20 +45,15 @@ class GrandPrixTTMainControl:
             if self.ifSeeingRed:
                 print("starting turn")
                 boost = self.K_energy / 0.005**2
-                self.counter = 1 
-            else:
-                boost = -self.K_energy / 0.045**2
-        elif self.counter < 22:
+                self.counter = 1
+            else: 
+                boost = -self.K_energy / 0.045**2  
+        else:
             print("still turning")
             boost = self.K_energy /0.005**2
             self.counter = self.counter + 1
-        else:
-            print("going toward middle")
-            boost = 0
-            self.counter = self.counter + 1
-            if self.counter == 32:
-                print("back to normal")
-                self.counter = 0	
+            if self.counter == 12:
+                self.counter = 0
             
         x_force_total = -self.K_energy / 0.02**2
         
@@ -85,6 +80,10 @@ class GrandPrixTTMainControl:
         speed = 0.005 * math.sqrt(x_force_total**2 + y_force_total**2) * np.sign(x_force_total)
         # this is the most important part though
         steering_angle = 1.0 * math.atan2(y_force_total, x_force_total) * np.sign(x_force_total)
+        if np.mean(msg.ranges[800:1000]) > 0.05 and not self.counter == 0:
+            if steering_angle > 0.2:
+                steering_angle = 0.2
+        print(steering_angle)
         self.pub_drive.publish(AckermannDriveStamped(self.header, AckermannDrive(speed = speed, steering_angle = steering_angle)))
     def image_cb(self, image_msg):
         thread = threading.Thread(target=self.image_callback,args=(image_msg,))

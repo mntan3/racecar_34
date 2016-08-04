@@ -48,8 +48,8 @@ class Echo:
 
 	# This should also not be in callback -- never changes why waist time
 	# creating it each time the callback happens
-	self.red_lower = np.array([-7,125,100])
-        self.red_upper = np.array([7,255,255])
+	self.red_lower = np.array([0,150,80])
+        self.red_upper = np.array([6,255,255])
         self.yellow_lower = np.array([20,175,100])
         self.yellow_upper = np.array([30,255,255])
         self.green_lower = np.array([50,100,100])
