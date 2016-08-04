@@ -4,18 +4,6 @@
 
   <include file="$(find zed_wrapper)/launch/zed.launch"/>
 
-  <node pkg="racecar_34" type="techchallenge2_main_control.py" name="tech_challenge_2_main_control_node" />
-
-  <node pkg="racecar_34" type="blob_detection.py" name="blob_detection_node" />
-
-  <node pkg="racecar_34" type="wall_follower.py" name="wall_follow_node" />
-
-  <node pkg="racecar_34" type="turn.py" name="turn_node" />
-
-  <node pkg="racecar_34" type="visual_servo.py" name="visual_servo_node" />
-
-  <node pkg="racecar_34" type="safety_control.py" name= "safety_controller_node" />
-
-  <remap from="/vesc/ackermann_cmd_mux/input/default" to="/dumb_node_that_does_nothing" />
+  <node pkg="racecar_34" type="grandprixTT_main_control.py" name="tech_challenge_2_main_control_node" />
 
 </launch> 
